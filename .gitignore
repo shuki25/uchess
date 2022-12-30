@@ -50,3 +50,14 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+micropython/
+
+# Python Tools
+__pycache__/
+
+# Mac stuff
+.DS_Store
+
+# Misc
+sandbox.py
+
