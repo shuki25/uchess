@@ -4,7 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "micropython/**"
+                "${workspaceFolder}/micropython/**",
+                "${workspaceFolder}/src/**"
             ],
             "defines": [],
             "macFrameworkPath": [

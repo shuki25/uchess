@@ -23,7 +23,6 @@ void *memset(void *s, int c, size_t n) {
 
 typedef struct _uchess_obj_t {
     mp_obj_base_t base;
-    mp_obj_t buf_obj; // neet to store this to prevent GC from collecting it
     char fen[87];
     int32_t depth;
     int32_t move;
@@ -32,15 +31,11 @@ typedef struct _uchess_obj_t {
     int32_t side;
 } uchess_obj_t;
 
-mp_obj_full_type_t uchess_type;
-
 STATIC mp_obj_t uchess_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     mp_arg_check_num(n_args, n_kw, 0, 0, false);
     
     uchess_obj_t *self = mp_obj_malloc(uchess_obj_t, type);
-    self->buf_obj = args[0];
-    
-    
+
     // strcpy(self->fen, START_FEN);
     self->depth = 9;
     self->move = 0;
@@ -61,7 +56,8 @@ STATIC mp_obj_t uchess_depth(mp_obj_t self_in) {
     uchess_obj_t *self = MP_OBJ_TO_PTR(self_in);
     return mp_obj_new_int(self->depth);
 }
-MP_DEFINE_CONST_FUN_OBJ_1(uchess_depth_obj, uchess_depth);
+
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(uchess_depth_obj, uchess_depth);
 
 /******************************************************************************
  * Method: uchess.print_bitboard()
@@ -99,32 +95,55 @@ STATIC mp_obj_t uchess_print_bitboard(mp_obj_t self_in, mp_obj_t bitboard_in) {
     return mp_const_none;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_2(uchess_print_bitboard_obj, uchess_print_bitboard);
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(uchess_print_bitboard_obj, uchess_print_bitboard);
 
-mp_map_elem_t uchess_locals_dict_table[2]; 
+
+mp_obj_full_type_t mp_type_uchess;
+
+mp_map_elem_t uchess_locals_dict_table[2];
 STATIC MP_DEFINE_CONST_DICT(uchess_locals_dict, uchess_locals_dict_table);
 
-// const mp_obj_type_t uchess_type = {
-//     { &mp_type_type },
-//     .name = MP_QSTR_uchess,
-//     .print = uchess_print,
-//     .make_new = uchess_make_new,
-//     .locals_dict = (mp_obj_dict_t*)&uchess_locals_dict,
-// };
-
-mp_obj_t mpy_init(mp_obj_fun_bc_t *self, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+mp_obj_t mpy_init(mp_obj_fun_bc_t *self, size_t n_args, size_t n_kw, mp_obj_t *args) {
     MP_DYNRUNTIME_INIT_ENTRY
 
-    mp_store_global(MP_QSTR_uchess, MP_OBJ_FROM_PTR(&uchess_type));
-    uchess_type.base.type = (void*)&mp_type_type;
-    uchess_type.name = MP_QSTR_uchess;
-    MP_OBJ_TYPE_SET_SLOT(&uchess_type, make_new, uchess_make_new, 0);
-    MP_OBJ_TYPE_SET_SLOT(&uchess_type, print, uchess_print, 1);
+    mp_type_uchess.base.type = mp_fun_table.type_type;
+    mp_type_uchess.name = MP_QSTR_UChess;
+    MP_OBJ_TYPE_SET_SLOT(&mp_type_uchess, make_new, &uchess_make_new, 0);
+    MP_OBJ_TYPE_SET_SLOT(&mp_type_uchess, print, &uchess_print, 1);
     uchess_locals_dict_table[0] = (mp_map_elem_t){ MP_OBJ_NEW_QSTR(MP_QSTR_depth), MP_OBJ_FROM_PTR(&uchess_depth_obj) };
     uchess_locals_dict_table[1] = (mp_map_elem_t){ MP_OBJ_NEW_QSTR(MP_QSTR_print_bitboard), MP_OBJ_FROM_PTR(&uchess_print_bitboard_obj) };
-    MP_OBJ_TYPE_SET_SLOT(&uchess_type, locals_dict, (void*)&uchess_locals_dict, 2);
+    MP_OBJ_TYPE_SET_SLOT(&mp_type_uchess, locals_dict, (void*)&uchess_locals_dict, 2);
 
-    mp_store_global(MP_QSTR_uchess, MP_OBJ_FROM_PTR(&uchess_type));
+    mp_store_global(MP_QSTR___name__, MP_OBJ_NEW_QSTR(MP_QSTR_uchess));
+    mp_store_global(MP_QSTR_UChess, MP_OBJ_FROM_PTR(&mp_type_uchess));
 
     MP_DYNRUNTIME_INIT_EXIT
 }
+
+
+
+
+
+
+
+// mp_obj_full_type_t uchess_type;
+
+// mp_map_elem_t uchess_locals_dict_table[2]; 
+// STATIC MP_DEFINE_CONST_DICT(uchess_locals_dict, uchess_locals_dict_table);
+
+
+// mp_obj_t mpy_init(mp_obj_fun_bc_t *self, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+//     MP_DYNRUNTIME_INIT_ENTRY
+
+//     uchess_type.base.type = (void*)&mp_type_type;
+//     uchess_type.name = MP_QSTR_UChess;
+//     MP_OBJ_TYPE_SET_SLOT(&uchess_type, make_new, uchess_make_new, 0);
+//     MP_OBJ_TYPE_SET_SLOT(&uchess_type, print, uchess_print, 1);
+//     uchess_locals_dict_table[0] = (mp_map_elem_t){ MP_OBJ_NEW_QSTR(MP_QSTR_depth), MP_OBJ_FROM_PTR(&uchess_depth_obj) };
+//     uchess_locals_dict_table[1] = (mp_map_elem_t){ MP_OBJ_NEW_QSTR(MP_QSTR_print_bitboard), MP_OBJ_FROM_PTR(&uchess_print_bitboard_obj) };
+//     MP_OBJ_TYPE_SET_SLOT(&uchess_type, locals_dict, (void*)&uchess_locals_dict, 2);
+
+//     mp_store_global(MP_QSTR_UChess, MP_OBJ_FROM_PTR(&uchess_type));
+
+//     MP_DYNRUNTIME_INIT_EXIT
+// }

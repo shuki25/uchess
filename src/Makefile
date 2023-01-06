@@ -8,12 +8,12 @@ MOD = uchess
 SRC = uchess.c
 
 # Architecture to build for (x86, x64, armv7m, xtensa, xtensawin)
-ARCH = xtensawin
+ARCH = x64
 
 # Options to pass compiler
-CFLAGS = -static
+# CFLAGS = -static
 
 # Include to get the rules for compiling and linking the module
 include $(MPY_DIR)/py/dynruntime.mk
 
-LIBS += $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+# LIBS += $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
