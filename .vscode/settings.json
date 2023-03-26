@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "objstr.h": "c",
-        "dynruntime.h": "c"
+        "dynruntime.h": "c",
+        "smallint.h": "c",
+        "objint.h": "c"
     }
 }

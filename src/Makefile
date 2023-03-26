@@ -5,13 +5,13 @@ MPY_DIR = ../micropython
 MOD = uchess
 
 # Source files (.c or .py)
-SRC = uchess.c
+SRC = helper.c uchess.c
 
 # Architecture to build for (x86, x64, armv7m, xtensa, xtensawin)
-ARCH = x64
+ARCH = xtensawin
 
 # Options to pass compiler
-# CFLAGS = -static
+CFLAGS += -DMICROPY_LONGINT_IMPL=MICROPY_LONGINT_IMPL_MPZ
 
 # Include to get the rules for compiling and linking the module
 include $(MPY_DIR)/py/dynruntime.mk
