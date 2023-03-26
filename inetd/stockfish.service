@@ -1,0 +1,13 @@
+[Unit]
+Description=Stockfish Service
+Requires=stockfish.socket
+
+[Service]
+Type=simple
+ExecStart=/usr/games/stockfish
+StandardInput=socket
+StandardError=joural
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target

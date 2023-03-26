@@ -1,0 +1,10 @@
+[Unit]
+Description=Stockfish Socket
+
+[Socket]
+ListenStream=127.0.0.1:9999
+Accept=yes
+
+[Install]
+WantedBy=sockets.target
+]
